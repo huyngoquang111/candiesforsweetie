@@ -2,20 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Candy Burst</title>
   <style>
-    :root { --max-candies: 220; }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
+    :root {
+      --max-candies: 220;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
       margin: 0;
-      min-height: 100svh;
-      display: grid;
-      place-items: center;
+      padding: 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       background: radial-gradient(1200px 800px at 50% 40%, #ffe7f1 0%, #f3f8ff 60%, #e8f1ff 100%);
-      overflow: hidden;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      overflow: hidden;
+      touch-action: manipulation;
     }
 
     #stage {
@@ -23,20 +32,21 @@
       inset: 0;
       pointer-events: none;
       overflow: hidden;
+      z-index: 1;
     }
 
     #centerCandy {
-      position: relative;
-      z-index: 10;
-      border: 0;
+      border: none;
       background: none;
       padding: 0;
+      margin-bottom: 20px;
       cursor: pointer;
-      transform: translateZ(0);
+      z-index: 2;
     }
 
     #centerCandy img {
-      width: clamp(100px, 18vw, 180px);
+      width: 28vw;
+      max-width: 140px;
       height: auto;
       display: block;
       image-rendering: pixelated;
@@ -83,30 +93,55 @@
     }
 
     #resetBtn {
-      position: fixed; right: 14px; bottom: 14px;
-      background: white; color: #333; border: 1px solid #dbe7ff;
-      padding: 10px 14px; border-radius: 14px; cursor: pointer;
-      box-shadow: 0 8px 20px rgba(0,0,0,.06);
-      font-weight: 600; font-size: 14px;
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      background: #ffffffdd;
+      color: #333;
+      border: 1px solid #dbe7ff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 3;
+      backdrop-filter: blur(6px);
     }
-    #resetBtn:hover { background: #f6faff; }
+    #resetBtn:hover {
+      background: #f6faff;
+    }
 
     .hint {
-      position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
-      color: #4a5568; font-size: 14px; opacity: .75;
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #4a5568;
+      font-size: 13px;
+      opacity: 0.75;
+      text-align: center;
+      z-index: 2;
     }
-    @media (max-width: 640px) { .hint { display: none; } }
+
+    @media (max-width: 480px) {
+      .hint {
+        font-size: 12px;
+        bottom: 64px;
+        padding: 0 12px;
+      }
+    }
   </style>
 </head>
 <body>
   <div id="stage" aria-hidden="true"></div>
 
-  <button id="centerCandy" aria-label="Pop candies" title="Click to pop candies (or press Space / Enter)">
-    <img src=\"assets/pngtree-candy-pixel-icon-png-image_6138023.png\" alt="Pixel Candy">
+  <img src="assets/cover_1.gif" alt="Candy Animation" style="max-width: 80vw; height: auto; margin-bottom: 16px; z-index: 2; position: relative;" />
+
+$1<img src="assets/pngtree-candy-pixel-icon-png-image_6138023.png" alt="Pixel Candy">
   </button>
 
   <button id="resetBtn" type="button" aria-label="Clear candies">Reset</button>
-  <div class="hint">Click the candy to pop more! (Space/Enter works too)</div>
+  <div class="hint">Tap the candy to pop more! (You can also use Space / Enter)</div>
 
   <script>
     (function() {
@@ -121,7 +156,7 @@
         el.className = 'candy is-flying';
 
         const img = document.createElement('img');
-        img.src = './pngtree-candy-pixel-icon-png-image_6138023.png';
+        img.src = "assets/pngtree-candy-pixel-icon-png-image_6138023.png";
         img.alt = 'Candy';
         el.appendChild(img);
 
@@ -163,9 +198,11 @@
       }
 
       btn.addEventListener('click', () => burst(14));
+      btn.addEventListener('touchstart', () => burst(14));
       btn.addEventListener('keydown', (e) => {
         if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); burst(14); }
       });
+
       resetBtn.addEventListener('click', () => {
         stage.querySelectorAll('.candy').forEach(el => el.remove());
       });
