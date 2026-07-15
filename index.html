@@ -2,27 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Candy Burst</title>
+
   <style>
     :root {
       --max-candies: 220;
     }
+
     * {
       box-sizing: border-box;
     }
+
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
     }
+
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(1200px 800px at 50% 40%, #ffe7f1 0%, #f3f8ff 60%, #e8f1ff 100%);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(
+        1200px 800px at 50% 40%,
+        #ffe7f1 0%,
+        #f3f8ff 60%,
+        #e8f1ff 100%
+      );
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       overflow: hidden;
       touch-action: manipulation;
     }
@@ -33,6 +43,22 @@
       pointer-events: none;
       overflow: hidden;
       z-index: 1;
+    }
+
+    #counter {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.85);
+      padding: 10px 18px;
+      border-radius: 16px;
+      font-weight: 700;
+      color: #444;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      backdrop-filter: blur(6px);
+      z-index: 3;
+      user-select: none;
     }
 
     #centerCandy {
@@ -54,7 +80,7 @@
     }
 
     @keyframes pulse {
-      0%, 100% { transform: scale(1); }
+      0%,100% { transform: scale(1); }
       50% { transform: scale(1.06); }
     }
 
@@ -75,21 +101,47 @@
     }
 
     @keyframes flyOut {
-      0%   { transform: translate(-50%,-50%) scale(.7) rotate(0deg); opacity: .9; }
-      100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(var(--rot)); opacity: 1; }
+      0% {
+        transform: translate(-50%, -50%) scale(.7) rotate(0deg);
+        opacity: .9;
+      }
+      100% {
+        transform:
+          translate(calc(-50% + var(--dx)),
+                    calc(-50% + var(--dy)))
+          scale(1)
+          rotate(var(--rot));
+        opacity: 1;
+      }
     }
 
     @keyframes floaty {
-      0%   { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(var(--rot)); }
-      100% { transform: translate(calc(-50% + var(--dx) + var(--fx)), calc(-50% + var(--dy) + var(--fy))) scale(1) rotate(calc(var(--rot) + var(--spin))); }
+      0% {
+        transform:
+          translate(calc(-50% + var(--dx)),
+                    calc(-50% + var(--dy)))
+          scale(1)
+          rotate(var(--rot));
+      }
+
+      100% {
+        transform:
+          translate(calc(-50% + var(--dx) + var(--fx)),
+                    calc(-50% + var(--dy) + var(--fy)))
+          scale(1)
+          rotate(calc(var(--rot) + var(--spin)));
+      }
     }
 
     .candy.is-flying {
-      animation: flyOut var(--dur) cubic-bezier(.15,.8,.25,1) forwards;
+      animation: flyOut var(--dur)
+                 cubic-bezier(.15,.8,.25,1)
+                 forwards;
     }
 
     .candy.is-floating {
-      animation: floaty var(--floatDur) ease-in-out infinite alternate;
+      animation: floaty var(--floatDur)
+                 ease-in-out infinite alternate;
     }
 
     #resetBtn {
@@ -107,6 +159,7 @@
       z-index: 3;
       backdrop-filter: blur(6px);
     }
+
     #resetBtn:hover {
       background: #f6faff;
     }
@@ -118,7 +171,7 @@
       transform: translateX(-50%);
       color: #4a5568;
       font-size: 13px;
-      opacity: 0.75;
+      opacity: .75;
       text-align: center;
       z-index: 2;
     }
@@ -132,84 +185,144 @@
     }
   </style>
 </head>
+
 <body>
-  <div id="stage" aria-hidden="true"></div>
 
-  <img src="assets/7c1aeee031d0fe9ada87673eb05a86a6.jpg" alt="Candy Animation" style="max-width: 80vw; height: auto; margin-bottom: 16px; z-index: 0; position: relative; opacity: 0.4; pointer-events: none;" />
+<div id="stage"></div>
 
-  <button id="centerCandy" aria-label="Pop candies" title="Tap to pop candies">
-    <img src="assets/pngtree-candy-pixel-icon-png-image_6138023.png" alt="Pixel Candy">
-  </button>
+<div id="counter">
+  🍬 Candies created:
+  <span id="count">0</span>
+</div>
 
-  <button id="resetBtn" type="button" aria-label="Clear candies">Reset</button>
-  <div class="hint">Tap the candy to pop more! (You can also use Space / Enter)</div>
+<img src="assets/7c1aeee031d0fe9ada87673eb05a86a6.jpg"
+     alt="Candy Animation"
+     style="max-width:80vw;
+            height:auto;
+            margin-bottom:16px;
+            z-index:0;
+            position:relative;
+            opacity:0.4;
+            pointer-events:none;">
 
-  <script>
-    (function() {
-      const stage = document.getElementById('stage');
-      const btn = document.getElementById('centerCandy');
-      const resetBtn = document.getElementById('resetBtn');
+<button id="centerCandy"
+        aria-label="Pop candies"
+        title="Tap to pop candies">
+  <img src="assets/pngtree-candy-pixel-icon-png-image_6138023.png"
+       alt="Pixel Candy">
+</button>
 
-      function rand(min, max) { return Math.random() * (max - min) + min; }
+<button id="resetBtn">Reset</button>
 
-      function spawnOne() {
-        const el = document.createElement('span');
-        el.className = 'candy is-flying';
+<div class="hint">
+  Tap the candy to pop more! (You can also use Space / Enter)
+</div>
 
-        const img = document.createElement('img');
-        img.src = "assets/pngtree-candy-pixel-icon-png-image_6138023.png";
-        img.alt = 'Candy';
-        el.appendChild(img);
+<script>
+(() => {
 
-        const size = rand(30, 60);
-        el.style.setProperty('--size', size + 'px');
+  const stage = document.getElementById("stage");
+  const btn = document.getElementById("centerCandy");
+  const resetBtn = document.getElementById("resetBtn");
 
-        const angle = rand(0, Math.PI * 2);
-        const dist = rand(120, 300);
-        const dx = Math.cos(angle) * dist;
-        const dy = Math.sin(angle) * dist;
-        el.style.setProperty('--dx', dx.toFixed(2) + 'px');
-        el.style.setProperty('--dy', dy.toFixed(2) + 'px');
-        el.style.setProperty('--rot', rand(-180, 180).toFixed(1) + 'deg');
-        el.style.setProperty('--dur', rand(420, 780).toFixed(0) + 'ms');
+  const countEl = document.getElementById("count");
+  let candyCount = 0;
 
-        const fx = rand(-6, 6), fy = rand(-6, 6), spin = rand(-6, 6);
-        el.style.setProperty('--fx', fx.toFixed(1) + 'px');
-        el.style.setProperty('--fy', fy.toFixed(1) + 'px');
-        el.style.setProperty('--spin', spin.toFixed(1) + 'deg');
-        el.style.setProperty('--floatDur', rand(2200, 3600).toFixed(0) + 'ms');
+  function rand(min, max) {
+    return Math.random() * (max - min) + min;
+  }
 
-        setTimeout(() => el.remove(), 14000 + Math.random() * 4000);
+  function updateCounter() {
+    countEl.textContent = candyCount.toLocaleString();
+  }
 
-        el.addEventListener('animationend', () => {
-          el.classList.remove('is-flying');
-          el.classList.add('is-floating');
-        }, { once: true });
+  function spawnOne() {
 
-        stage.appendChild(el);
+    const el = document.createElement("span");
+    el.className = "candy is-flying";
+
+    const img = document.createElement("img");
+    img.src = "assets/pngtree-candy-pixel-icon-png-image_6138023.png";
+    img.alt = "Candy";
+
+    el.appendChild(img);
+
+    const size = rand(30, 60);
+    el.style.setProperty("--size", size + "px");
+
+    const angle = rand(0, Math.PI * 2);
+    const dist = rand(120, 300);
+
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist;
+
+    el.style.setProperty("--dx", dx + "px");
+    el.style.setProperty("--dy", dy + "px");
+    el.style.setProperty("--rot", rand(-180,180) + "deg");
+    el.style.setProperty("--dur", rand(420,780) + "ms");
+
+    el.style.setProperty("--fx", rand(-6,6) + "px");
+    el.style.setProperty("--fy", rand(-6,6) + "px");
+    el.style.setProperty("--spin", rand(-6,6) + "deg");
+    el.style.setProperty("--floatDur", rand(2200,3600) + "ms");
+
+    setTimeout(() => el.remove(), 14000 + Math.random() * 4000);
+
+    el.addEventListener("animationend", () => {
+      el.classList.remove("is-flying");
+      el.classList.add("is-floating");
+    }, { once: true });
+
+    stage.appendChild(el);
+
+    candyCount++;
+    updateCounter();
+  }
+
+  function burst(count = 12) {
+
+    const maxCandies = parseInt(
+      getComputedStyle(document.documentElement)
+      .getPropertyValue("--max-candies")
+    );
+
+    const existing = stage.querySelectorAll(".candy");
+
+    if (existing.length + count > maxCandies) {
+      const over = existing.length + count - maxCandies;
+
+      for (let i = 0; i < over && i < existing.length; i++) {
+        existing[i].remove();
       }
+    }
 
-      function burst(count = 12) {
-        const existing = stage.querySelectorAll('.candy');
-        if (existing.length > parseInt(getComputedStyle(document.documentElement).getPropertyValue('--max-candies'))) {
-          const over = existing.length - parseInt(getComputedStyle(document.documentElement).getPropertyValue('--max-candies')) + count;
-          for (let i = 0; i < over && i < existing.length; i++) existing[i].remove();
-        }
-        for (let i = 0; i < count; i++) setTimeout(spawnOne, i * 20);
-      }
+    for (let i = 0; i < count; i++) {
+      setTimeout(spawnOne, i * 20);
+    }
+  }
 
-      btn.addEventListener('click', () => burst(14));
-      btn.addEventListener('touchstart', () => burst(14));
-      btn.addEventListener('keydown', (e) => {
-        if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); burst(14); }
-      });
+  btn.addEventListener("pointerdown", () => {
+    burst(14);
+  });
 
-      resetBtn.addEventListener('click', () => {
-        stage.querySelectorAll('.candy').forEach(el => el.remove());
-      });
+  btn.addEventListener("keydown", (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      burst(14);
+    }
+  });
 
-      setTimeout(() => burst(8), 600);
-    })();
-  </script>
+  resetBtn.addEventListener("click", () => {
+    stage.querySelectorAll(".candy").forEach(el => el.remove());
+
+    candyCount = 0;
+    updateCounter();
+  });
+
+  setTimeout(() => burst(8), 600);
+
+})();
+</script>
+
 </body>
 </html>
